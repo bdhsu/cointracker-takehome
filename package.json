@@ -1,9 +1,8 @@
 {
-  "name": "hello-next",
-  "version": "1.0.0",
+  "name": "cointracker-takehome",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "license": "MIT",
   "author": "",
   "main": "index.js",
   "scripts": {
