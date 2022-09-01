@@ -7,21 +7,19 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+model Wallet {
+  id Int @id @default(autoincrement())
+  address String
+  balance Int
+  transactions Transaction[]
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+model Transaction {
+  id String @id @default(uuid())
+  wallet Wallet @relation(fields: [walletId], references: [id])
+  walletId Int @map("wallet_id")
+  date DateTime
+  transactionType String @map("transaction_type")
+  hash String 
+  amount Int
 }
