@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+
 import {
   Modal,
   ModalOverlay,
@@ -17,8 +19,17 @@ type ModalType = {
 };
 
 function RemoveWalletModal({ isOpen, onClose, walletId }: ModalType) {
-  const handleRemove = () => {
-    alert(`Removing wallet ${walletId}`);
+  const router = useRouter();
+
+  const handleRemove = async (e) => {
+    try {
+      await fetch(`/api/wallet/${walletId}`, {
+        method: "DELETE",
+      });
+      await router.push("/wallets");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

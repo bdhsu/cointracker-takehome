@@ -10,7 +10,7 @@ datasource db {
 model Wallet {
   id Int @id @default(autoincrement())
   address String
-  balance Int
+  balance Int?
   transactions Transaction[]
 }
 

@@ -1,7 +1,9 @@
+import { GetServerSideProps } from "next";
+import prisma from "../../../lib/prisma";
+import { makeSerializable } from "../../../lib/util";
 import { useRouter } from "next/router";
 import {
   Box,
-  Grid,
   TableContainer,
   Table,
   TableCaption,
@@ -15,10 +17,8 @@ import { getLayout } from "components/Layout";
 import PageHeading from "components/PageHeading";
 import Transaction from "components/Transaction";
 
-function WalletPage() {
-  const router = useRouter();
-  const walletId = router.query.id?.toString() || "";
-
+function WalletPage({ id, address, balance, transactions }) {
+  // NOTE: Page is still showing sample transactions due to not getting fetching from the api working in the  alotted time
   const SAMPLE_TXS = [
     {
       id: "2863561b-2340-48a3-830a-373bb5f92801",
@@ -49,13 +49,13 @@ function WalletPage() {
   return (
     <Box>
       <PageHeading
-        title={`Wallet ${walletId}`}
+        title={`Wallet ${id}`}
         description="View all transactions for this wallet"
       />
 
       <TableContainer mt="4">
         <Table variant="simple">
-          <TableCaption>Wallet address here</TableCaption>
+          <TableCaption>Wallet address: {address}</TableCaption>
           <Thead>
             <Tr>
               <Th>Transaction Type</Th>
@@ -84,6 +84,22 @@ function WalletPage() {
     </Box>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const walletId = context.query.id || "";
+
+  const { id, address, balance, transactions } = await prisma.wallet.findUnique(
+    {
+      where: { id: parseInt(walletId as string) },
+      include: {
+        transactions: true,
+      },
+    }
+  );
+  return {
+    props: { id, address, balance, transactions },
+  };
+};
 
 WalletPage.getLayout = (page) => getLayout(page, "Wallet Transactions");
 

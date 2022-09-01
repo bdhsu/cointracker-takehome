@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 import {
   Modal,
   ModalOverlay,
@@ -13,7 +15,6 @@ import {
   FormErrorMessage,
   FormHelperText,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
 
 type ModalType = {
   isOpen: boolean;
@@ -25,6 +26,7 @@ type FormData = {
 };
 
 function AddWalletModal({ isOpen, onClose }: ModalType) {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -32,7 +34,19 @@ function AddWalletModal({ isOpen, onClose }: ModalType) {
   } = useForm<FormData>();
 
   const onSubmit = async (data) => {
-    alert(`Saving new wallet with address ${data.address}`);
+    const { address } = data;
+
+    try {
+      const body = { address };
+      await fetch(`/api/wallet/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      await router.push("/wallets");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

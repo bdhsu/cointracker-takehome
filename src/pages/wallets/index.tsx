@@ -1,29 +1,15 @@
-import { Box, Button, Grid, useDisclosure } from "@chakra-ui/react";
+import { GetServerSideProps } from "next";
+import prisma from "../../../lib/prisma";
+import { makeSerializable } from "../../../lib/util";
+
+import { Box, Button, Grid, useDisclosure, Text } from "@chakra-ui/react";
 import { getLayout } from "components/Layout";
 
 import PageHeading from "components/PageHeading";
 import Wallet from "components/Wallet";
 import AddWalletModal from "components/modals/AddWalletModal";
 
-function WalletsPage() {
-  const SAMPLE_WALLETS = [
-    {
-      id: 1,
-      address: "3E8ociqZa9mZUSwGdSmAEMAoAxBK3FNDcd",
-      balance: 0.00007569,
-    },
-    {
-      id: 2,
-      address: "bc1q0sg9rdst255gtldsmcf8rk0764avqy2h2ksqs5",
-      balance: 0,
-    },
-    {
-      id: 3,
-      address: "12xQ9k5ousS8MqNsMBqHKtjAtCuKezm2Ju",
-      balance: 0.00624366,
-    },
-  ];
-
+function WalletsPage({ wallets }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -38,16 +24,28 @@ function WalletsPage() {
         }
       />
 
-      <Grid templateColumns="repeat(1fr)" gap={6} mt="4">
-        {SAMPLE_WALLETS.map(({ id, address, balance }) => (
-          <Wallet key={id} id={id} address={address} balance={balance} />
-        ))}
-      </Grid>
+      {wallets.length > 0 ? (
+        <Grid templateColumns="repeat(1fr)" gap={6} mt="4">
+          {wallets.map(({ id, address, balance }) => (
+            <Wallet key={id} id={id} address={address} balance={balance} />
+          ))}
+        </Grid>
+      ) : (
+        <Text mt="4">No wallets available...</Text>
+      )}
 
       <AddWalletModal isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const wallets = await prisma.wallet.findMany({});
+
+  return {
+    props: { wallets: makeSerializable(wallets) },
+  };
+};
 
 WalletsPage.getLayout = (page) => getLayout(page, "Wallets");
 
