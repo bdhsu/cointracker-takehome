@@ -1,6 +1,13 @@
 # CoinTracker Takehome
 
-Full-Stack app in TypeScript with [Next.js](https://nextjs.org/), [React](https://reactjs.org/), [Express](https://expressjs.com/) and [Prisma Client](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client). Uses a SQLite db file.
+Full-Stack app using the following technologies
+
+- [Next.js](https://nextjs.org/) as the [React](https://reactjs.org/) framework
+- [Next.js API routes](https://nextjs.org/docs/api-routes/introduction) for server-side API routes as the backend
+- [Prisma](https://www.prisma.io/) as the ORM
+- SQLite as the database
+
+I decided to go with Next.js here as the frontend framework because it's a great framework that I'm familiar with, and also offers Next.js API routes as an extremely simple way to build a backend, avoiding needing to set up a server. Also went with SQLite as the db since this app is not very demanding.
 
 ## Usage
 
